@@ -141,12 +141,14 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
-        if (service.readProduct(id) != null) {
-            return ResponseEntity.notFound().build();
-        }
+    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
         service.deleteProduct(id);
         scheduler.deletetimer(id);
         return ResponseEntity.status(HttpStatus.OK).body("Deleted Auction");
+    }
+    @GetMapping(path = "/images/{id}")
+    public ResponseEntity<?> getimg(@PathVariable("id") int id){
+        Product data = service.readProduct(id);
+        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(data.getImg().getData());
     }
 }

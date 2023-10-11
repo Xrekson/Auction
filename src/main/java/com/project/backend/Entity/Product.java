@@ -20,7 +20,7 @@ public class Product {
     private int id;
     @Column
     private String name;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.REMOVE)
     private Images img;
     @Column(length = 11,precision = 2)
     private double price;
