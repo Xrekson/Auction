@@ -44,6 +44,8 @@ public class Product {
     private Date created;
     @Temporal(TemporalType.TIMESTAMP)
     private Timestamp updated;
+    @Column(length = 11,precision = 2)
+    private Double highestbid;
     private String createdby;
     private String updatedby;
 }

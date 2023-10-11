@@ -3,6 +3,7 @@ package com.project.backend.service;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
+import java.util.TimerTask;
 import java.util.stream.Collectors;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,7 +23,7 @@ public class Timex {
     @Autowired
     private Auction_ProductService service;
     Timer mpx = new Timer();
-    Map<Integer, Compi> schedule = new HashMap<>();
+    Map<Integer, TimerTask> schedule = new HashMap<>();
     Logger logger = LogManager.getLogger(BackendApplication.class);
 
     public void createtimer(String name,String username) {
@@ -37,20 +38,26 @@ public class Timex {
         Starting tasky = new Starting(data.getId(), service);
         mpx.schedule(tasky, data.getAuction_start());
         mpx.schedule(taskx,  data.getAuction_end());
-        schedule.put(data.getId(),taskx);
+        schedule.put(data.getId()+100000,taskx);
+	    schedule.put(data.getId()+200000,tasky);
     }
     public void updatetimer(Product prod){
-        schedule.get(prod.getId()).cancel();
+        schedule.get(prod.getId()+100000).cancel();
+        schedule.get(prod.getId()+200000).cancel();
         logger.info(prod.getId());
-		schedule.remove(prod.getId());
+		schedule.remove(prod.getId()+100000);
+		schedule.remove(prod.getId()+200000);
 		Compi taskx = new Compi(prod.getId(),service);
 		Starting tasky = new Starting(prod.getId(), service);
 	    mpx.schedule(taskx,  prod.getAuction_end());
 	    mpx.schedule(tasky, prod.getAuction_start());
-	    schedule.put(prod.getId(),taskx);
+	    schedule.put(prod.getId()+100000,taskx);
+	    schedule.put(prod.getId()+200000,tasky);
     }
     public void deletetimer(Integer id){
-        schedule.get(id).cancel();
-    	schedule.remove(id);
+        schedule.get(id+100000).cancel();
+        schedule.get(id+200000).cancel();
+    	schedule.remove(id+100000);
+    	schedule.remove(id+200000);
     }
 }

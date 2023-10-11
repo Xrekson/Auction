@@ -70,6 +70,7 @@ public class ProductController {
             prod.setImg(img);
             prod.setPrice(productPrice);
             prod.setCategory(productCategory);
+            prod.setPriceInterval(productPriceInterval);
             prod.setIs_active(0);
             prod.setIs_paused(0);
             prod.setIs_closed(0);
@@ -105,6 +106,7 @@ public class ProductController {
             @RequestParam(name = "price", required = false) Double productPrice,
             @RequestParam(name = "image", required = false) MultipartFile image,
             @RequestParam(name = "dtl", required = false) String productDetail,
+            @RequestParam(name = "highest_bid", required = false) Double hbid,
             @RequestParam(name = "category", required = false) String productCategory,
             @RequestParam(name="updatedby", required = false) String updatedby,
             @RequestParam(name = "starttime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
@@ -119,6 +121,8 @@ public class ProductController {
                     prod.setName(productName);
                 if (productDetail != null)
                     prod.setDtl(productDetail);
+                if (hbid != null)
+                    prod.setHighestbid(hbid);
                 if (productPrice != null)
                     prod.setPrice(productPrice);
                 if (productCategory != null)
