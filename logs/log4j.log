@@ -1,0 +1,12 @@
+[INFO ] 2023-10-04 12:57:05.091 [main] BackendApplication - Starting BackendApplication using Java 17.0.7 with PID 25128 (D:\Training_Project\backend\target\classes started by Samrat.Podder in D:\Training_Project\backend)
+[INFO ] 2023-10-04 12:57:05.103 [main] BackendApplication - No active profile set, falling back to 1 default profile: "default"
+[INFO ] 2023-10-04 12:57:06.137 [main] TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[INFO ] 2023-10-04 12:57:06.327 [main] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1170 ms
+[INFO ] 2023-10-04 12:57:06.685 [main] TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[INFO ] 2023-10-04 12:57:06.700 [main] BackendApplication - Started BackendApplication in 2.112 seconds (process running for 3.625)
+[INFO ] 2023-10-04 12:58:53.656 [main] BackendApplication - Starting BackendApplication using Java 17.0.7 with PID 21228 (D:\Training_Project\backend\target\classes started by Samrat.Podder in D:\Training_Project\backend)
+[INFO ] 2023-10-04 12:58:53.667 [main] BackendApplication - No active profile set, falling back to 1 default profile: "default"
+[INFO ] 2023-10-04 12:58:54.665 [main] TomcatWebServer - Tomcat initialized with port(s): 8080 (http)
+[INFO ] 2023-10-04 12:58:54.780 [main] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 1066 ms
+[INFO ] 2023-10-04 12:58:55.100 [main] TomcatWebServer - Tomcat started on port(s): 8080 (http) with context path ''
+[INFO ] 2023-10-04 12:58:55.107 [main] BackendApplication - Started BackendApplication in 1.795 seconds (process running for 2.796)
