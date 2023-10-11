@@ -166,9 +166,4 @@ public class ProductController {
     		return ResponseEntity.status(HttpStatus.OK).body("Not Found"+e.getMessage());    		
     	}
     }
-    @GetMapping(path = "/images/{id}")
-    public ResponseEntity<?> getimg(@PathVariable("id") int id){
-        Product data = service.readProduct(id);
-        return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(data.getImg().getData());
-    }
 }
