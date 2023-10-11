@@ -17414,3 +17414,85 @@ Consider defining a bean of type 'java.lang.Integer' in your configuration.
 [INFO ] 2023-10-11 11:07:25.303 [scheduling-1] ProductController - 2023-10-11 11:07:25.303
 [INFO ] 2023-10-11 11:07:26.304 [scheduling-1] ProductController - 2023-10-11 11:07:26.304
 [INFO ] 2023-10-11 11:07:27.316 [scheduling-1] ProductController - 2023-10-11 11:07:27.316
+[INFO ] 2023-10-11 11:55:13.865 [main] BackendApplication - Starting Springboot application
+[INFO ] 2023-10-11 11:55:14.136 [restartedMain] BackendApplication - Starting Springboot application
+[INFO ] 2023-10-11 11:55:14.809 [restartedMain] BackendApplication - Starting BackendApplication using Java 17.0.7 with PID 28472 (C:\Users\rajdeep.basak\Desktop\Auction\Auction\target\classes started by Rajdeep.Basak in C:\Users\rajdeep.basak\Desktop\Auction\Auction)
+[INFO ] 2023-10-11 11:55:14.816 [restartedMain] BackendApplication - No active profile set, falling back to 1 default profile: "default"
+[INFO ] 2023-10-11 11:55:14.912 [restartedMain] DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+[INFO ] 2023-10-11 11:55:14.912 [restartedMain] DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+[INFO ] 2023-10-11 11:55:17.000 [restartedMain] RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[INFO ] 2023-10-11 11:55:17.157 [restartedMain] RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 131 ms. Found 2 JPA repository interfaces.
+[INFO ] 2023-10-11 11:55:19.070 [restartedMain] TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+[INFO ] 2023-10-11 11:55:19.294 [restartedMain] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 4378 ms
+[INFO ] 2023-10-11 11:55:19.913 [restartedMain] LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+[INFO ] 2023-10-11 11:55:20.066 [restartedMain] Version - HHH000412: Hibernate ORM core version 6.1.7.Final
+[INFO ] 2023-10-11 11:55:21.847 [restartedMain] SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+[WARN ] 2023-10-11 11:55:25.240 [restartedMain] ExceptionHandlerLoggedImpl - GenerationTarget encountered exception accepting command : Error executing DDL "
+    alter table if exists auction_products 
+       add column id integer not null" via JDBC Statement
+org.hibernate.tool.schema.spi.CommandAcceptanceException: Error executing DDL "
+    alter table if exists auction_products 
+       add column id integer not null" via JDBC Statement
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:67) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlString(AbstractSchemaMigrator.java:587) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.applySqlStrings(AbstractSchemaMigrator.java:608) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.migrateTable(AbstractSchemaMigrator.java:325) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.GroupedSchemaMigratorImpl.performTablesMigration(GroupedSchemaMigratorImpl.java:83) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.performMigration(AbstractSchemaMigrator.java:225) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.internal.AbstractSchemaMigrator.doMigration(AbstractSchemaMigrator.java:126) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.performDatabaseAction(SchemaManagementToolCoordinator.java:284) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.lambda$process$5(SchemaManagementToolCoordinator.java:143) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at java.util.HashMap.forEach(HashMap.java:1421) ~[?:?]
+	at org.hibernate.tool.schema.spi.SchemaManagementToolCoordinator.process(SchemaManagementToolCoordinator.java:140) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.internal.SessionFactoryImpl.<init>(SessionFactoryImpl.java:336) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.boot.internal.SessionFactoryBuilderImpl.build(SessionFactoryBuilderImpl.java:415) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.hibernate.jpa.boot.internal.EntityManagerFactoryBuilderImpl.build(EntityManagerFactoryBuilderImpl.java:1423) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	at org.springframework.orm.jpa.vendor.SpringHibernateJpaPersistenceProvider.createContainerEntityManagerFactory(SpringHibernateJpaPersistenceProvider.java:75) ~[spring-orm-6.0.12.jar:6.0.12]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.createNativeEntityManagerFactory(LocalContainerEntityManagerFactoryBean.java:376) ~[spring-orm-6.0.12.jar:6.0.12]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.buildNativeEntityManagerFactory(AbstractEntityManagerFactoryBean.java:409) ~[spring-orm-6.0.12.jar:6.0.12]
+	at org.springframework.orm.jpa.AbstractEntityManagerFactoryBean.afterPropertiesSet(AbstractEntityManagerFactoryBean.java:396) ~[spring-orm-6.0.12.jar:6.0.12]
+	at org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean.afterPropertiesSet(LocalContainerEntityManagerFactoryBean.java:352) ~[spring-orm-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.invokeInitMethods(AbstractAutowireCapableBeanFactory.java:1817) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.initializeBean(AbstractAutowireCapableBeanFactory.java:1766) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.doCreateBean(AbstractAutowireCapableBeanFactory.java:598) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractAutowireCapableBeanFactory.createBean(AbstractAutowireCapableBeanFactory.java:520) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.lambda$doGetBean$0(AbstractBeanFactory.java:325) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.DefaultSingletonBeanRegistry.getSingleton(DefaultSingletonBeanRegistry.java:234) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.doGetBean(AbstractBeanFactory.java:323) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.beans.factory.support.AbstractBeanFactory.getBean(AbstractBeanFactory.java:199) ~[spring-beans-6.0.12.jar:6.0.12]
+	at org.springframework.context.support.AbstractApplicationContext.getBean(AbstractApplicationContext.java:1158) ~[spring-context-6.0.12.jar:6.0.12]
+	at org.springframework.context.support.AbstractApplicationContext.finishBeanFactoryInitialization(AbstractApplicationContext.java:932) ~[spring-context-6.0.12.jar:6.0.12]
+	at org.springframework.context.support.AbstractApplicationContext.refresh(AbstractApplicationContext.java:608) ~[spring-context-6.0.12.jar:6.0.12]
+	at org.springframework.boot.web.servlet.context.ServletWebServerApplicationContext.refresh(ServletWebServerApplicationContext.java:146) ~[spring-boot-3.0.11.jar:3.0.11]
+	at org.springframework.boot.SpringApplication.refresh(SpringApplication.java:732) ~[spring-boot-3.0.11.jar:3.0.11]
+	at org.springframework.boot.SpringApplication.refreshContext(SpringApplication.java:434) ~[spring-boot-3.0.11.jar:3.0.11]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:310) ~[spring-boot-3.0.11.jar:3.0.11]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1304) ~[spring-boot-3.0.11.jar:3.0.11]
+	at org.springframework.boot.SpringApplication.run(SpringApplication.java:1293) ~[spring-boot-3.0.11.jar:3.0.11]
+	at com.project.backend.BackendApplication.main(BackendApplication.java:17) ~[classes/:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[?:?]
+	at jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:77) ~[?:?]
+	at jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[?:?]
+	at java.lang.reflect.Method.invoke(Method.java:568) ~[?:?]
+	at org.springframework.boot.devtools.restart.RestartLauncher.run(RestartLauncher.java:50) ~[spring-boot-devtools-3.0.11.jar:3.0.11]
+Caused by: org.postgresql.util.PSQLException: ERROR: column "id" of relation "auction_products" contains null values
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2676) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2366) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:356) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:496) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:413) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:333) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.executeCachedSql(PgStatement.java:319) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.executeWithFlags(PgStatement.java:295) ~[postgresql-42.5.4.jar:42.5.4]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:290) ~[postgresql-42.5.4.jar:42.5.4]
+	at com.zaxxer.hikari.pool.ProxyStatement.execute(ProxyStatement.java:94) ~[HikariCP-5.0.1.jar:?]
+	at com.zaxxer.hikari.pool.HikariProxyStatement.execute(HikariProxyStatement.java) ~[HikariCP-5.0.1.jar:?]
+	at org.hibernate.tool.schema.internal.exec.GenerationTargetToDatabase.accept(GenerationTargetToDatabase.java:54) ~[hibernate-core-6.1.7.Final.jar:6.1.7.Final]
+	... 41 more
+[INFO ] 2023-10-11 11:55:25.730 [restartedMain] JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[INFO ] 2023-10-11 11:55:25.760 [restartedMain] LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+[WARN ] 2023-10-11 11:55:26.877 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[WARN ] 2023-10-11 11:55:29.229 [restartedMain] OptionalLiveReloadServer - Unable to start LiveReload server
+[INFO ] 2023-10-11 11:55:29.244 [restartedMain] EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+[INFO ] 2023-10-11 11:55:29.508 [restartedMain] TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+[INFO ] 2023-10-11 11:55:29.561 [restartedMain] BackendApplication - Started BackendApplication in 15.409 seconds (process running for 17.676)

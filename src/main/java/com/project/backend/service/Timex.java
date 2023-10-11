@@ -41,9 +41,12 @@ public class Timex {
     }
     public void updatetimer(Product prod){
         schedule.get(prod.getId()).cancel();
+        logger.info(prod.getId());
 		schedule.remove(prod.getId());
 		Compi taskx = new Compi(prod.getId(),service);
+		Starting tasky = new Starting(prod.getId(), service);
 	    mpx.schedule(taskx,  prod.getAuction_end());
+	    mpx.schedule(tasky, prod.getAuction_start());
 	    schedule.put(prod.getId(),taskx);
     }
     public void deletetimer(Integer id){
