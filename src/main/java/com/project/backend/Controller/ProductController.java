@@ -89,15 +89,26 @@ public class ProductController {
         }
     }
 
+    
+    
+    
+    @GetMapping(path = "/image/{id}")
+    public ResponseEntity<?> images(@PathVariable("id") Integer id) {
+    	Product dataProduct = service.readProduct(id);
+    	return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(dataProduct.getImg().getData());
+	}
+    
+    
+    
     @PutMapping(path = "/update/{id}")
-    public ResponseEntity<?> updateProduct(@RequestParam(name = "product_name", required = false) String productName,
-            @RequestParam(name = "product_price", required = false) Double productPrice,
-            @RequestParam(name = "product_image", required = false) MultipartFile image,
-            @RequestParam(name = "product_dtl", required = false) String productDetail,
-            @RequestParam(name = "product_category", required = false) String productCategory,
-            @RequestParam("product_updated") String updatedby,
-            @RequestParam(name = "starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
-            @RequestParam(name = "endtime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime,
+    public ResponseEntity<?> updateProduct(@RequestParam(name = "name", required = false) String productName,
+            @RequestParam(name = "price", required = false) Double productPrice,
+            @RequestParam(name = "image", required = false) MultipartFile image,
+            @RequestParam(name = "dtl", required = false) String productDetail,
+            @RequestParam(name = "category", required = false) String productCategory,
+            @RequestParam(name="updatedby", required = false) String updatedby,
+            @RequestParam(name = "starttime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
+            @RequestParam(name = "endtime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime,
             @RequestParam(name = "product_is_paused", required = false) Integer isPaused,
             @PathVariable int id) {
         Product prodop = service.readProduct(id);
@@ -141,10 +152,15 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "/delete/{id}")
-    public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
-        service.deleteProduct(id);
-        scheduler.deletetimer(id);
-        return ResponseEntity.status(HttpStatus.OK).body("Deleted Auction");
+    public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+    	try {
+    		service.deleteProduct(id);
+    		scheduler.deletetimer(id);
+    		return ResponseEntity.status(HttpStatus.OK).body("Deleted Auction");    		
+    	}
+    	catch(Exception e){
+    		return ResponseEntity.status(HttpStatus.OK).body("Not Found"+e.getMessage());    		
+    	}
     }
     @GetMapping(path = "/images/{id}")
     public ResponseEntity<?> getimg(@PathVariable("id") int id){
