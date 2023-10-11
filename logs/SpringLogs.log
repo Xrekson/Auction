@@ -20953,3 +20953,22 @@ Caused by: java.lang.Error: Unresolved compilation problems:
 [INFO ] 2023-10-11 16:00:07.533 [restartedMain] TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
 [INFO ] 2023-10-11 16:00:07.538 [restartedMain] BackendApplication - Started BackendApplication in 1.02 seconds (process running for 14560.484)
 [INFO ] 2023-10-11 16:00:07.541 [restartedMain] ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+[INFO ] 2023-10-11 16:01:34.102 [File Watcher] LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 3 class path changes (0 additions, 0 deletions, 3 modifications)
+[INFO ] 2023-10-11 16:01:34.122 [Thread-565] LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+[INFO ] 2023-10-11 16:01:34.258 [restartedMain] BackendApplication - Starting Springboot application
+[INFO ] 2023-10-11 16:01:34.299 [restartedMain] BackendApplication - Starting BackendApplication using Java 17.0.7 with PID 22572 (C:\Users\rajdeep.basak\Desktop\Auction\Auction\target\classes started by Rajdeep.Basak in C:\Users\rajdeep.basak\Desktop\Auction\Auction)
+[INFO ] 2023-10-11 16:01:34.300 [restartedMain] BackendApplication - No active profile set, falling back to 1 default profile: "default"
+[INFO ] 2023-10-11 16:01:34.530 [restartedMain] RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+[INFO ] 2023-10-11 16:01:34.548 [restartedMain] RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 18 ms. Found 2 JPA repository interfaces.
+[INFO ] 2023-10-11 16:01:34.610 [restartedMain] TomcatWebServer - Tomcat initialized with port(s): 8081 (http)
+[INFO ] 2023-10-11 16:01:34.648 [restartedMain] ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 347 ms
+[INFO ] 2023-10-11 16:01:34.682 [restartedMain] LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+[INFO ] 2023-10-11 16:01:34.999 [restartedMain] SQL dialect - HHH000400: Using dialect: org.hibernate.dialect.PostgreSQLDialect
+[INFO ] 2023-10-11 16:01:35.112 [restartedMain] JtaPlatformInitiator - HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+[INFO ] 2023-10-11 16:01:35.112 [restartedMain] LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+[WARN ] 2023-10-11 16:01:35.179 [restartedMain] JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+[WARN ] 2023-10-11 16:01:35.250 [restartedMain] OptionalLiveReloadServer - Unable to start LiveReload server
+[INFO ] 2023-10-11 16:01:35.253 [restartedMain] EndpointLinksResolver - Exposing 1 endpoint(s) beneath base path '/actuator'
+[INFO ] 2023-10-11 16:01:35.291 [restartedMain] TomcatWebServer - Tomcat started on port(s): 8081 (http) with context path ''
+[INFO ] 2023-10-11 16:01:35.295 [restartedMain] BackendApplication - Started BackendApplication in 1.03 seconds (process running for 14648.236)
+[INFO ] 2023-10-11 16:01:35.297 [restartedMain] ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
