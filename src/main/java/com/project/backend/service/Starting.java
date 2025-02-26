@@ -6,7 +6,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.project.backend.BackendApplication;
-import com.project.backend.Entity.Product;
+import com.project.backend.Entity.Listing;
 import com.project.backend.service.impl.Auction_ProductService;
 
 public class Starting extends TimerTask {
@@ -20,7 +20,7 @@ public class Starting extends TimerTask {
 	}
 	@Override
 	public void run() {
-		Product dataProduct = service.readProduct(id);
+		Listing dataProduct = service.readProduct(id);
 		logger.info("Starting listing id:"+dataProduct.getId()+" name:"+dataProduct.getName());
 		dataProduct.setIs_closed(0);
 		dataProduct.setIs_active(1);

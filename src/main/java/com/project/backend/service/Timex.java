@@ -12,14 +12,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.project.backend.BackendApplication;
-import com.project.backend.Entity.Product;
-import com.project.backend.Repository.ProductRepository;
+import com.project.backend.Entity.Listing;
+import com.project.backend.Repository.ListingRepo;
 import com.project.backend.service.impl.Auction_ProductService;
 
 @Component
 public class Timex {
     @Autowired
-    private ProductRepository prepo;
+    private ListingRepo prepo;
     @Autowired
     private Auction_ProductService service;
     Timer mpx = new Timer();
@@ -27,7 +27,7 @@ public class Timex {
     Logger logger = LogManager.getLogger(BackendApplication.class);
 
     public void createtimer(String name,String username) {
-        Product data = (Product)prepo.findAll().stream().filter(datax->{
+        Listing data = (Listing)prepo.findAll().stream().filter(datax->{
             if(datax.getName()==name&&datax.getCreatedby()==username){
                 return true;
             }else{
@@ -41,7 +41,7 @@ public class Timex {
         schedule.put(data.getId()+100000,taskx);
 	    schedule.put(data.getId()+200000,tasky);
     }
-    public void updatetimer(Product prod){
+    public void updatetimer(Listing prod){
         schedule.get(prod.getId()+100000).cancel();
         schedule.get(prod.getId()+200000).cancel();
         logger.info(prod.getId());

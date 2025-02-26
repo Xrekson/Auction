@@ -1,8 +1,5 @@
 package com.project.backend.Entity;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -16,36 +13,36 @@ import lombok.NoArgsConstructor;
 public class Product {
     @Id
     @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private int product_id;
+
     @Column
-    private String name;
-    @OneToOne(cascade = CascadeType.REMOVE)
-    private Images img;
-    @Column(length = 11,precision = 2)
-    private double price;
+    private String product_name;
+
     @Column
-    private String dtl;
+    @Lob
+    private byte[] product_img;
+
     @Column
-    private String category;
+    private double product_price;
+
     @Column
-    private int is_active;
+    private String product_dtl;
+
     @Column
-    private int is_closed;
+    private String product_category;
+
     @Column
-    private int is_paused;
-    @Column(length = 11,precision = 2)
-    private Double priceInterval;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date auction_start;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date auction_end;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date created;
-    @Temporal(TemporalType.TIMESTAMP)
-    private Timestamp updated;
-    @Column(length = 11,precision = 2)
-    private Double highestbid;
-    private String createdby;
-    private String updatedby;
+    private int product_is_active;
+
+    @Column
+    private int product_is_closed;
+
+    @Column
+    private int product_is_paused;
+
+    @Column
+    private double product_highest_bid;
+
+
 }
