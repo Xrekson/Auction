@@ -3,7 +3,9 @@ import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,17 +25,18 @@ import org.springframework.web.multipart.MultipartFile;
 import com.project.backend.Entity.Users;
 import com.project.backend.service.impl.Servo;
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 public class UserController {
 	@Autowired
 	Servo samp;
 	@PostMapping(value = "/user/save",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
-	public void save(@RequestPart("dob") String dob, @RequestPart("email") String email,
+	public ResponseEntity<?> save(@RequestPart("dob") String dob, @RequestPart("email") String email,
 			@RequestPart("mobileno") String phno, @RequestPart("username") String username,
 			@RequestPart("password") String password, @RequestPart("type") String type,
 			@RequestPart("deg") String desx, @RequestPart("about") String about, @RequestPart("name") String name,
 			@RequestParam("file") MultipartFile file) {
 		Users data = new Users();
+		Map<String, Object> response = new HashMap<String,Object>();
 		try {
 			System.out.print(dob+username+password+type+desx+about+name+file.getSize());
 			data.setCreatedat(new Timestamp(System.currentTimeMillis()));
@@ -47,8 +51,13 @@ public class UserController {
 			data.setDesx(desx);
 			data.setName(name);
 			samp.save(data, file);
+			response.put("msg","User Creation Success!");
+			return ResponseEntity.ok(response);
 		} catch (ParseException e) {
 			e.printStackTrace();
+			response.put("msg","User Creation Failed!");
+			response.put("err",e.getMessage());
+			return ResponseEntity.ok(response);
 		}
 	}
 	@GetMapping(value = "/user/getall")

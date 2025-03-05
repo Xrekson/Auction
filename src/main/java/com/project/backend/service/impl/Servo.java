@@ -84,7 +84,6 @@ public class Servo {
 	public void updateUser(Users input) throws Exception {
 		Users data = userRepo.findById(input.getId()).get();
 		if(data!=null) {
-
 			data.setUpdatedat(new Timestamp(System.currentTimeMillis()));
 			data.setDob(input.getDob());
 			data.setPassword(input.getPassword());
