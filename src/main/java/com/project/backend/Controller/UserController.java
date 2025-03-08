@@ -8,8 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,12 +27,17 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.project.backend.Entity.Users;
 import com.project.backend.service.impl.Servo;
+import com.project.backend.vo.Util;
 @RestController
 @CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 public class UserController {
 	@Autowired
 	Servo samp;
-	@PostMapping(value = "/user/save",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
+	
+	@Autowired
+	Util jwtUtil;
+	
+	@PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestPart("dob") String dob, @RequestPart("email") String email,
 			@RequestPart("mobileno") String phno, @RequestPart("username") String username,
 			@RequestPart("password") String password, @RequestPart("type") String type,
@@ -60,19 +68,37 @@ public class UserController {
 			return ResponseEntity.ok(response);
 		}
 	}
-	@GetMapping(value = "/user/getall")
+	@GetMapping(value = "/auth/user/getall")
 	public List<Users> name() {
 		return samp.getAll();
 	}
-	@GetMapping(value="/user/get/{username}")
+	@GetMapping(value="/auth/user/get/{username}")
 	public Users getuser(@PathVariable("username") String username) {
 		return samp.getusername(username);
 	}
-	@DeleteMapping(value = "/user/delete/{id}")
+	@GetMapping(value="/login")
+	public ResponseEntity<?> login(@RequestPart("username") String username,
+			@RequestPart("password") String password) {
+		Users data = samp.getUsersingle(username, password);
+		if(data!=null) {
+			Map<String ,String> res = new HashMap<String, String>();
+//			claims.put("Position",data.getDesx());
+//			claims.put("Type",data.getType());
+			UserDetails usr = new User(username, password, null);
+			String jwToken = jwtUtil.generateToken(usr);
+			res.put("token", jwToken);
+			return ResponseEntity.ok(res);
+		}else {
+			Map<String ,String> claims = new HashMap<String, String>();
+			claims.put("error", "Wrong username or password!");
+			return ResponseEntity.ok(claims);
+		}
+	}
+	@DeleteMapping(value = "/auth/user/delete/{id}")
 	public void dell(@RequestParam("id") String id) {
 		samp.deleteUser(Integer.parseInt(id));
 	}
-	@PutMapping(value = "/user/update/{userName}")
+	@PutMapping(value = "/auth/user/update/{userName}")
 	public void UpdateUser(@RequestPart(name="dob",required = false) String dob, @RequestPart(name="email",required = false) String email,
 			@RequestPart(name="phno",required = false) String phno, @PathVariable(name="userName") String username,
 			@RequestPart(name="password",required = false) String password,@RequestPart(name="id",required = false) Integer id,
@@ -100,7 +126,7 @@ public class UserController {
 			e.printStackTrace();
 		}
 	}
-	@GetMapping("/user/get/file/{id}")
+	@GetMapping("/auth/user/get/file/{id}")
 	public ResponseEntity<byte[]> getFile(@PathVariable Integer id) {
 		byte[] fileEntity = samp.getFile(id).getData();
 		if (fileEntity == null) {

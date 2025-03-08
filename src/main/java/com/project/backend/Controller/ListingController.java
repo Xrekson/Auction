@@ -2,7 +2,9 @@ package com.project.backend.Controller;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -29,7 +31,6 @@ import com.project.backend.service.Timex;
 import com.project.backend.service.impl.Auction_ProductService;
 
 @RestController
-@RequestMapping(path = "/auction")
 @CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 public class ListingController {
     @Autowired
@@ -47,7 +48,7 @@ public class ListingController {
         return prod;
     }
     @PostMapping(path = "/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<String> createProduct(@RequestParam("name") String productName,
+    public ResponseEntity<?> createProduct(@RequestParam("name") String productName,
             @RequestParam("price") double productPrice,
             @RequestParam("image") MultipartFile image,
             @RequestParam("dtl") String productDetail,
@@ -57,6 +58,7 @@ public class ListingController {
             @RequestParam(name = "starttime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
             @RequestParam(name = "endtime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime) {
         logger.info("Multipartfile is " + image);
+        Map<String ,String> res = new HashMap<String, String>();
         try {
             Listing prod = new Listing();
             Images img = new Images();
@@ -81,11 +83,14 @@ public class ListingController {
             prod.setUpdated(new Timestamp(System.currentTimeMillis()));
             service.createProduct(prod, img);
             scheduler.createtimer(prod.getName(), prod.getCreatedby());
-            return ResponseEntity.ok("Auction Listing Created");
+            res.put("msg", "Auction Listing Created!");
+            return ResponseEntity.ok(res);
         } catch (Exception e) {
             logger.warn(e.getMessage());
             logger.info("booom");
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create new auction Listing");
+            res.put("error", "Failed to create new auction Listing!");
+            res.put("path",e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
         }
     }
 
@@ -106,6 +111,7 @@ public class ListingController {
             @RequestParam(name = "endtime", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime,
             @RequestParam(name = "product_is_paused", required = false) Integer isPaused,
             @PathVariable int id) {
+    	Map<String ,String> res = new HashMap<String, String>();
         Listing prodop = service.readProduct(id);
         if (prodop != null) {
             try {
@@ -130,18 +136,22 @@ public class ListingController {
                     prod.setIs_paused(isPaused);
                 Images img = prod.getImg();
                 String msg;
-                msg = service.updateProduct(prod, prod.getImg());
                 if (image != null) {
                     img.setContentType(image.getContentType());
                     img.setData(image.getBytes());
                     img.setSize(image.getSize());
                     msg = service.updateProduct(prod, img);
+                    scheduler.updatetimer(prod);
+                    res.put("msg", msg);
+                }else {
+                	msg = service.updateProduct(prod, prod.getImg());
+                	res.put("msg", msg);
                 }
-                scheduler.updatetimer(prod);
-                return ResponseEntity.ok().body(msg);
+                return ResponseEntity.ok().body(res);
             } catch (Exception e) {
                 logger.info(e.getMessage());
-                return ResponseEntity.internalServerError().build();
+                res.put("msg", e.getMessage());
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
             }
         } else {
             return ResponseEntity.notFound().build();
@@ -149,13 +159,17 @@ public class ListingController {
     }
     @DeleteMapping(path = "/delete/{id}")
     public ResponseEntity<?> deleteProduct(@PathVariable int id) {
+    	Map<String ,String> res = new HashMap<String, String>();
     	try {
     		service.deleteProduct(id);
     		scheduler.deletetimer(id);
-    		return ResponseEntity.status(HttpStatus.OK).body("Deleted Auction");    		
+    		res.put("msg", "Deleted Auction with ID:"+id+" !");
+    		return ResponseEntity.status(HttpStatus.OK).body(res);    		
     	}
     	catch(Exception e){
-    		return ResponseEntity.status(HttpStatus.OK).body("Not Found"+e.getMessage());    		
+    		res.put("msg", "Not Found Auction with ID:"+id+" !");
+    		res.put("path", e.getMessage());
+    		return ResponseEntity.status(HttpStatus.OK).body(res);    		
     	}
     }
 }

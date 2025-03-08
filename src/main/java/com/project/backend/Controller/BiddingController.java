@@ -7,11 +7,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
-@RequestMapping(path = "/bid")
+@RequestMapping(path = "/auth/bid")
 public class BiddingController {
     @Autowired
     BidServiceImpl bidService;
@@ -21,11 +23,14 @@ public class BiddingController {
     }
     @GetMapping("/{id}")
     public ResponseEntity<?> getBidById(@PathVariable int id) {
+    	Map<String ,String> res = new HashMap<String, String>();
         Bid b = bidService.getBidbyID(id);
         if (b == null) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Bid ID Wrong");
+        	res.put("error", "Auction not found with ID: "+id+ " !");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(res);
         };
-        return ResponseEntity.ok().body(b);
+        res.put("msg", "Bid placed with ID: "+id+ " !");
+        return ResponseEntity.ok().body(res);
     }
     @GetMapping("/auction/{auctionItemId}")
     public List<Bid> getBidsByAuctionItemId(@PathVariable("auctionItemId") Integer auctionItemId) {
