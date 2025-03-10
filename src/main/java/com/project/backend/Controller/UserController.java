@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,6 +24,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 
 import com.project.backend.Entity.Users;
 import com.project.backend.service.impl.Servo;
@@ -36,6 +38,9 @@ public class UserController {
 	
 	@Autowired
 	Util jwtUtil;
+	
+	@Autowired
+    private PasswordEncoder encoder;
 	
 	@PostMapping(value = "/register",consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces =MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<?> save(@RequestPart("dob") String dob, @RequestPart("email") String email,
@@ -53,7 +58,7 @@ public class UserController {
 			data.setEmail(email);
 			data.setPhno(phno);
 			data.setUserName(username);
-			data.setPassword(password);
+			data.setPassword(encoder.encode(password));
 			data.setType(type);
 			data.setAbout(about);
 			data.setDesx(desx);
@@ -76,17 +81,23 @@ public class UserController {
 	public Users getuser(@PathVariable("username") String username) {
 		return samp.getusername(username);
 	}
-	@GetMapping(value="/login")
-	public ResponseEntity<?> login(@RequestPart("username") String username,
-			@RequestPart("password") String password) {
+	@PostMapping(value="/login")
+	public ResponseEntity<?> login(@RequestParam String username,
+			@RequestParam String password) {
 		Users data = samp.getUsersingle(username, password);
+		password = encoder.encode(password);
 		if(data!=null) {
 			Map<String ,String> res = new HashMap<String, String>();
+			if(encoder.matches(data.getPassword(), password)) {
+				res.put("error", "Wrong password!");				
+			}else {
+				String jwToken = jwtUtil.generateToken(data);
+				res.put("token", jwToken);				
+				res.put("id", data.getId().toString());		
+				res.put("username", data.getUserName());
+				}
 //			claims.put("Position",data.getDesx());
-//			claims.put("Type",data.getType());
-			UserDetails usr = new User(username, password, null);
-			String jwToken = jwtUtil.generateToken(usr);
-			res.put("token", jwToken);
+//			claims.put("Type",data.getType());			
 			return ResponseEntity.ok(res);
 		}else {
 			Map<String ,String> claims = new HashMap<String, String>();

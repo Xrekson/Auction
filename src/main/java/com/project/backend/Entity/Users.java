@@ -32,7 +32,7 @@ public class Users {
 	String desx;
 	@Column(length = 100)
 	String about;
-	@Column(length = 18)
+	@Column(length = 255)
 	String password;
 	@Column(length = 50)
 	String email;

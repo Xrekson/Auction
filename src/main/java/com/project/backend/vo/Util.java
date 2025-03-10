@@ -4,14 +4,21 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+
+import com.project.backend.Entity.Users;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 @Component
 public class Util {
@@ -19,9 +26,10 @@ public class Util {
     private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
     private static final long EXPIRATION_TIME = 1800000; // 30 min
 
-    public String generateToken(UserDetails userDetails) {
+    public String generateToken(Users userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        return createToken(claims, userDetails.getUsername());
+        claims.put("roles", List.of(userDetails.getType().split(",")).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        return createToken(claims, userDetails.getUserName());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {

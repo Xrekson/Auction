@@ -2,9 +2,12 @@ package com.project.backend.service.impl;
 
 import java.io.IOException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -22,6 +25,7 @@ public class Servo {
 	UserRepo userRepo;
 	@Autowired
 	ImageRepo imgRepo;
+	
 	@Transactional
 	public void save(Users input, MultipartFile image) {
 		Images data = new Images();
@@ -57,7 +61,8 @@ public class Servo {
 	}
 	@Transactional
 	public Users getUsersingle(String username,String password){
-		return userRepo.findByUserNameAndPassword(username,password).get(0);
+		List<Users> data = userRepo.findByUserName(username);
+		return data.size()>0 ? data.get(0):null;
 	}
 	@Transactional
 	public void UpdateImage(Integer id,MultipartFile image) {
