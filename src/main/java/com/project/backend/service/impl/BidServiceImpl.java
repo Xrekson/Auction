@@ -13,6 +13,7 @@ import com.project.backend.Entity.Bid;
 import com.project.backend.Entity.Listing;
 import com.project.backend.Repository.BidRepo;
 import com.project.backend.service.BidService;
+import com.project.backend.service.UserService;
 
 import jakarta.transaction.Transactional;
 
@@ -23,10 +24,10 @@ public class BidServiceImpl implements BidService {
     BidRepo brepo;
 
     @Autowired
-    Auction_ProductService prodService;
+    AuctionProductServiceImpl prodService;
 
     @Autowired
-    Servo userService;
+    UserService userService;
 
     private static final Logger logger = LogManager.getLogger(BidServiceImpl.class);
     /**

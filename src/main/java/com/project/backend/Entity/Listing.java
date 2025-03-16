@@ -3,8 +3,6 @@ package com.project.backend.Entity;
 import java.sql.Timestamp;
 import java.util.Date;
 
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,21 +21,15 @@ public class Listing {
     private int id;
     @Column
     private String name;
-    @OneToOne
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Images img;
+    @Column
+    private String[] img;
     @Column(length = 11,precision = 2)
     private double price;
     @Column
-    private String dtl;
-    @Column
-    private String category;
-    @Column
-    private int is_active;
-    @Column
-    private int is_closed;
-    @Column
-    private int is_paused;
+    private String detail;
+    @JoinColumn
+    @ManyToOne(cascade = CascadeType.ALL)
+    private Category category;
     @Column(length = 11,precision = 2)
     private Double priceInterval;
     @Temporal(TemporalType.TIMESTAMP)

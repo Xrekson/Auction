@@ -8,6 +8,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.project.backend.Entity.Users;
+import com.project.backend.service.UserService;
 
 import java.util.Collections;
 
@@ -15,7 +16,7 @@ import java.util.Collections;
 public class jwtService implements UserDetailsService {
 
     @Autowired
-    Servo userService;
+    UserService userService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
