@@ -14,15 +14,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.backend.Entity.Category;
 import com.project.backend.Entity.Listing;
 import com.project.backend.service.AuctionProductService;
@@ -32,6 +32,10 @@ import com.project.backend.service.AuctionProductService;
 public class ListingController {
     @Autowired
     private AuctionProductService service;
+
+    @Autowired
+	ObjectMapper json;
+
     private static final Logger logger = LogManager.getLogger(ListingController.class);
     @GetMapping(path = "/listings")
     public List<Listing> readProduct() {
@@ -42,30 +46,13 @@ public class ListingController {
         Listing prod = service.readProduct(id);
         return prod;
     }
-    @PostMapping(path = "/listing/save", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<?> createProduct(@RequestParam("name") String productName,
-            @RequestParam("price") double productPrice,
-            @RequestParam String[] image,
-            @RequestParam("detail") String productDetail,
-            @RequestParam("category") Category productCategory,
-            @RequestParam(name="created", required = false) String createdby,
-            @RequestParam("priceinterval") double productPriceInterval,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime) {
+    @PostMapping(path = "/listing/save")
+    public ResponseEntity<?> createProduct(@RequestBody String data) {
         Map<String ,String> res = new HashMap<String, String>();
         try {
             Listing prod = new Listing();
-            prod.setName(productName);
-            prod.setDetail(productDetail);
-            prod.setImg(image);
+            prod = json.readValue(data, Listing.class);
             prod.setHighestbid(0.0);
-            prod.setPrice(productPrice);
-            prod.setCategory(productCategory);
-            prod.setPriceInterval(productPriceInterval);
-            prod.setCreatedby(createdby);
-            prod.setUpdatedby(createdby);
-            prod.setAuction_start(Timestamp.valueOf(starttime));
-            prod.setAuction_end(Timestamp.valueOf(endtime));
             prod.setCreated(new Timestamp(System.currentTimeMillis()));
             prod.setUpdated(new Timestamp(System.currentTimeMillis()));
             service.createProduct(prod);
@@ -127,6 +114,20 @@ public class ListingController {
     }
     @PostMapping(path = "/listing/delete")
     public ResponseEntity<?> deleteProduct(@RequestParam int id) {
+    	Map<String ,String> res = new HashMap<String, String>();
+    	try {
+    		service.deleteProduct(id);
+    		res.put("msg", "Deleted Auction with ID:"+id+" !");
+    		return ResponseEntity.status(HttpStatus.OK).body(res);    		
+    	}
+    	catch(Exception e){
+    		res.put("msg", "Not Found Auction with ID:"+id+" !");
+    		res.put("path", e.getMessage());
+    		return ResponseEntity.status(HttpStatus.OK).body(res);    		
+    	}
+    }
+    @PostMapping(path = "/category/create")
+    public ResponseEntity<?> createProduct(@RequestParam int id) {
     	Map<String ,String> res = new HashMap<String, String>();
     	try {
     		service.deleteProduct(id);
