@@ -11,27 +11,28 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @EnableWebSocketMessageBroker
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
-    //  private final JwtWebSocketInterceptor jwtInterceptor;
+    private final JwtWebSocketInterceptor jwtInterceptor;
 
-    // public WebSocketConfig(JwtWebSocketInterceptor jwtInterceptor) {
-    //     this.jwtInterceptor = jwtInterceptor;
-    // }
+    public WebSocketConfig(JwtWebSocketInterceptor jwtInterceptor) {
+        this.jwtInterceptor = jwtInterceptor;
+    }
 
-    // @Override
-    // public void configureClientInboundChannel(ChannelRegistration registration) {
-    //     registration.interceptors(jwtInterceptor); // Add JWT interceptor
-    // }
+    @Override
+    public void configureClientInboundChannel(ChannelRegistration registration) {
+        // MUST uncomment this to enable the security check you wrote!
+        registration.interceptors(jwtInterceptor); 
+    }
 
-	@Override
+    @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/main"); // Enables a simple in-memory message broker
-        config.setApplicationDestinationPrefixes("/auc"); // Prefix for messages bound for @MessageMapping
+        config.enableSimpleBroker("/main"); 
+        config.setApplicationDestinationPrefixes("/auc"); 
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websoc") // WebSocket endpoint
-                .setAllowedOriginPatterns("*") // Allow all origins (adjust in production)
-                .withSockJS(); // Enables SockJS fallback
+        registry.addEndpoint("/websoc") 
+                .setAllowedOriginPatterns("*") 
+                .withSockJS(); 
     }
 }

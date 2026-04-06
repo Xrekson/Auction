@@ -1,42 +1,27 @@
-package com.eAuction.e_backend.Entity;
+package com.eAuction.e_backend.DTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-@Table(name="Auction_Products")
-public class Listing {
-    @Id
-    @Column
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
-    @Column
+public class AuctionData {
+     private int id;
     private String name;
-    @Column(length = 11,precision = 2)
     private double price;
-    @Column
     private String detail;
-    @JoinColumn
-    // @ManyToOne(cascade = CascadeType.ALL)
-    // private Category category;
-    @Column(length = 11,precision = 2)
     private Double priceInterval;
     private LocalDateTime auction_start;
     private LocalDateTime auction_end;
     private LocalDateTime created;
     private LocalDateTime updated;
-    @Column(length = 11,precision = 2)
     private Double highestbid;
     private String createdby;
     private String updatedby;
-    @ElementCollection
-    private List<String> images; 
+    private List<String> images;
 }

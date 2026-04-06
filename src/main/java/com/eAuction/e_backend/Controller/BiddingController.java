@@ -11,9 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:5173"},methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
-@RequestMapping(path = "/auth/bid")
+@RequestMapping(path = "/bid")
 public class BiddingController {
     @Autowired
     BidServiceImpl bidService;

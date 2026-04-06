@@ -1,6 +1,7 @@
 package com.eAuction.e_backend.Security;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,8 +35,8 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwt = null;
-
-        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        System.out.println( !("Bearer null".equals(authorizationHeader)) + " "+request.getHeader(HttpHeaders.ORIGIN));
+        if (authorizationHeader != null && !("Bearer null".equals(authorizationHeader)) && authorizationHeader.startsWith("Bearer ")) {
             jwt = authorizationHeader.substring(7);
             username = jwtUtil.extractUsername(jwt);
         }

@@ -10,5 +10,5 @@ public interface BidService {
     public List<Bid> getAllBids();
     public Bid getBidbyID(int id);
     public List<Bid> getBidsByAuctionItemId(Integer auctionItemId);
-    public ResponseEntity<String> placeBid(int userId, int auctionItemId, double bidAmount);
+    public ResponseEntity<String> placeBidByUsername(String username, int auctionItemId, double bidAmount);
 }

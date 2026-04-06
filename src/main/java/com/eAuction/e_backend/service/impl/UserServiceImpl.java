@@ -1,7 +1,7 @@
 package com.eAuction.e_backend.service.impl;
 
 import java.io.IOException;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
 	public void updateUser(Users input) throws Exception {
 		Users data = userRepo.findById(input.getId()).get();
 		if(data!=null) {
-			data.setUpdatedat(new Timestamp(System.currentTimeMillis()));
+			data.setUpdatedat(LocalDateTime.now());
 			data.setDob(input.getDob());
 			data.setPassword(input.getPassword());
 			data.setPhno(input.getPhno());

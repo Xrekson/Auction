@@ -30,16 +30,22 @@ public class JwtWebSocketInterceptor implements ChannelInterceptor {
         
         if (accessor != null && StompCommand.CONNECT.equals(accessor.getCommand())) {
             String token = extractToken(accessor);
-            if (token != null && jwtUtil.isTokenValid(token)) {
+            
+            if (token != null) {
                 String username = jwtUtil.extractUsername(token);
-                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                 
-                // Validate token against user details
+                // Combined the checks to avoid redundant parsing
                 if (jwtUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authentication = 
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    
+                    // Set authentication for Spring Security & the WebSocket session
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                     accessor.setUser(authentication);
+                } else {
+                    // Clear context if token validation fails
+                    SecurityContextHolder.clearContext();
                 }
             }
         }

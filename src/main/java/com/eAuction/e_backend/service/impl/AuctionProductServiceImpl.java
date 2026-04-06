@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.eAuction.e_backend.DTO.AuctionData;
 import com.eAuction.e_backend.Entity.Listing;
 import com.eAuction.e_backend.Repository.ListingRepo;
 import com.eAuction.e_backend.service.AuctionProductService;
@@ -20,7 +21,6 @@ public class AuctionProductServiceImpl implements AuctionProductService {
     public void createProduct(Listing product) {
         prepo.save(product);
     }
-    @Transactional
     public Listing readProduct(Integer id) {
         return prepo.findById(id).get();
     }
@@ -37,8 +37,9 @@ public class AuctionProductServiceImpl implements AuctionProductService {
     public void deleteProduct(int id) {
         prepo.deleteById(id);
     }
-    @Transactional
-    public List<Listing> readAllProduct() {
-        return prepo.findAll();
+    public List<AuctionData> readAllProduct() {
+        return prepo.findAll().stream().map(data->{
+            return new AuctionData(data.getId(),data.getName(),data.getPrice(),data.getDetail(),null,data.getAuction_start(),data.getAuction_end(),null,null,null,null,null,data.getImages());
+        }).toList();
     }
 }

@@ -9,18 +9,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class UserReq {
-
+@NoArgsConstructor
+public class UserDTO {
+    private Integer id;
+    private String userName;
+    private String name;
+    private String email;
+    private String phno;
+    private String type;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSX")
-    public LocalDateTime dob;
-    public String email;
-    public String mobileno;
-    public String username;
-    public String password;
-    public String type;
-    public String desx;
-    public String about;
-    public String name;
+    private LocalDateTime dob;
 }

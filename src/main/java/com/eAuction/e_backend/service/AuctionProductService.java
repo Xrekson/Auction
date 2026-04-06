@@ -1,5 +1,6 @@
 package com.eAuction.e_backend.service;
 
+import com.eAuction.e_backend.DTO.AuctionData;
 import com.eAuction.e_backend.Entity.Listing;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface AuctionProductService {
     public String updateProduct(Listing prod);
     public void deleteProduct(int id);
 
-    public List<Listing> readAllProduct();
+    public List<AuctionData> readAllProduct();
 
 //    public double getHighestBid();
 }

@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.eAuction.e_backend.Entity.Bid;
+import com.eAuction.e_backend.Entity.Users;
 import com.eAuction.e_backend.Entity.Listing;
 import com.eAuction.e_backend.Repository.BidRepo;
 import com.eAuction.e_backend.service.BidService;
@@ -30,6 +31,7 @@ public class BidServiceImpl implements BidService {
     UserService userService;
 
     private static final Logger logger = LogManager.getLogger(BidServiceImpl.class);
+
     /**
      * @return
      */
@@ -65,35 +67,65 @@ public class BidServiceImpl implements BidService {
      * @param bidAmount
      * @return
      */
+    /**
+     * Places a bid using the username extracted from the JWT Principal.
+     * This prevents users from placing bids on behalf of other IDs.
+     */
     @Override
     @Transactional
+    public ResponseEntity<String> placeBidByUsername(String username, int auctionItemId, double bidAmount) {
+        // 1. Find the user by username (email)
+        // Assumption: Your userService has a method findByEmail or similar
+        Users user = userService.getusername(username);
+
+        if (user == null) {
+            logger.error("Bid attempt by non-existent user: {}", username);
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        // 2. Delegate to the existing placeBid logic using the verified User ID
+        return placeBid(user.getId(), auctionItemId, bidAmount);
+    }
+
+    @Transactional
     public ResponseEntity<String> placeBid(int userId, int auctionItemId, double bidAmount) {
-        Listing auctionProduct = null;
+        Listing auctionProduct;
         try {
             auctionProduct = prodService.readProduct(auctionItemId);
+            if (auctionProduct == null) {
+                return ResponseEntity.status(404).body("Auction item not found");
+            }
         } catch (Exception e) {
-            logger.info(e.getMessage());
-            return ResponseEntity.notFound().build();
+            logger.error("Error fetching product: {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
         }
-        if(bidAmount<=auctionProduct.getHighestbid()+auctionProduct.getPriceInterval()){
-            return ResponseEntity.badRequest().body("Add more money to add BID!");
+
+        // Business Logic: Check if bid is high enough
+        double minimumRequired = auctionProduct.getHighestbid() + auctionProduct.getPriceInterval();
+        if (bidAmount < minimumRequired) {
+            return ResponseEntity.badRequest()
+                    .body("Bid too low! Minimum required: " + minimumRequired);
         }
-        // Create a new bid
+
+        // Fetch user
+        var user = userService.getUsers(userId);
+        if (user == null) {
+            return ResponseEntity.status(404).body("User not found");
+        }
+
+        // Create and save bid
         Bid bid = new Bid();
-        bid.setUser(userService.getUsers(userId));
+        bid.setUser(user);
         bid.setAuctionItem(auctionProduct);
         bid.setBidAmount(bidAmount);
         bid.setBidTimestamp(LocalDateTime.now());
 
-        // Update the highest bid amount for the auction item
+        brepo.save(bid);
+
+        // Update product highest bid
         auctionProduct.setHighestbid(bidAmount);
-        String data = prodService.updateProduct(auctionProduct);
+        String updateStatus = prodService.updateProduct(auctionProduct);
 
-        // Save the bid to the database
-        bid = brepo.save(bid);
-
-        if(auctionProduct == null || bid == null)
-            return ResponseEntity.internalServerError().body("Bid Not Created!");
-        return ResponseEntity.ok(bidAmount+data);
+        return ResponseEntity.ok("Bid placed successfully. " + updateStatus);
     }
 }

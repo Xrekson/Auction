@@ -1,7 +1,6 @@
 package com.eAuction.e_backend.Entity;
 
-import java.sql.Timestamp;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -9,8 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,12 +34,9 @@ public class Users {
 	String email;
 	@Column(length = 10)
 	String phno;
-	@Temporal(TemporalType.DATE)
-	Date dob;
+	LocalDateTime dob;
 	@Column(length = 10)
 	String type;
-	@Temporal(TemporalType.TIMESTAMP)
-	Timestamp createdat;
-	@Temporal(TemporalType.TIMESTAMP)
-	Timestamp updatedat;
+	LocalDateTime createdat;
+	LocalDateTime updatedat;
 }

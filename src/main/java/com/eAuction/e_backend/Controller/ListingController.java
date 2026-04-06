@@ -1,14 +1,10 @@
 package com.eAuction.e_backend.Controller;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,27 +19,40 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.eAuction.e_backend.Entity.Category;
+import com.eAuction.e_backend.DTO.AuctionData;
 import com.eAuction.e_backend.Entity.Listing;
 import com.eAuction.e_backend.service.AuctionProductService;
 
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:5173"},methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 @RestController
-@CrossOrigin(origins = "http://localhost:4200",methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
 public class ListingController {
-    @Autowired
-    private AuctionProductService service;
 
-    @Autowired
-	ObjectMapper json;
+    private final AuctionProductService auctionService;
+    private final ObjectMapper json;
 
-    private static final Logger logger = LogManager.getLogger(ListingController.class);
+    // Constructor injection – recommended
+    public ListingController(AuctionProductService auctionService,
+                             ObjectMapper json) {
+        this.auctionService = auctionService;
+        this.json = json;
+    }
+    
     @GetMapping(path = "/listings")
-    public List<Listing> readProduct() {
-        return service.readAllProduct();
+    public List<AuctionData> readProduct() {
+        return auctionService.readAllProduct();
+    }
+    @GetMapping(path = "/pre-auth/listings")
+    public List<AuctionData> readProductPreLogin() {
+        return auctionService.readAllProduct();
     }
     @GetMapping(path = "/listing/{id}")
     public Listing readProductByID( @PathVariable(name = "id") Integer id) {
-        Listing prod = service.readProduct(id);
+        Listing prod = auctionService.readProduct(id);
+        return prod;
+    }
+    @GetMapping(path = "/pre-auth/listing/{id}")
+    public Listing readProductByIDPreLogin( @PathVariable(name = "id") Integer id) {
+        Listing prod = auctionService.readProduct(id);
         return prod;
     }
     @PostMapping(path = "/listing/save")
@@ -53,14 +62,12 @@ public class ListingController {
             Listing prod = new Listing();
             prod = json.readValue(data, Listing.class);
             prod.setHighestbid(0.0);
-            prod.setCreated(new Timestamp(System.currentTimeMillis()));
-            prod.setUpdated(new Timestamp(System.currentTimeMillis()));
-            service.createProduct(prod);
+            prod.setCreated(LocalDateTime.now());
+            prod.setUpdated(LocalDateTime.now());
+            auctionService.createProduct(prod);
             res.put("msg", "Auction Listing Created!");
             return ResponseEntity.ok(res);
         } catch (Exception e) {
-            logger.warn(e.getMessage());
-            logger.info("booom");
             res.put("error", "Failed to create new auction Listing!");
             res.put("path",e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
@@ -78,7 +85,7 @@ public class ListingController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime,
             @RequestParam Integer id) {
     	Map<String ,String> res = new HashMap<String, String>();
-        Listing prodop = service.readProduct(id);
+        Listing prodop = auctionService.readProduct(id);
         if (prodop != null) {
             try {
                 Listing prod = prodop;
@@ -93,15 +100,14 @@ public class ListingController {
                 if (updatedby != null)
                     prod.setUpdatedby(updatedby);
                 if (starttime != null)
-                    prod.setAuction_start(Timestamp.valueOf(starttime));
+                    prod.setAuction_start(starttime);
                 if (endtime != null)
-                    prod.setAuction_end(Timestamp.valueOf(endtime));
+                    prod.setAuction_end(endtime);
                 String msg;
-                	msg = service.updateProduct(prod);
+                	msg = auctionService.updateProduct(prod);
                 	res.put("msg", msg);
                 return ResponseEntity.ok().body(res);
             } catch (Exception e) {
-                logger.info(e.getMessage());
                 res.put("msg", e.getMessage());
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(res);
             }
@@ -113,7 +119,7 @@ public class ListingController {
     public ResponseEntity<?> deleteProduct(@RequestParam int id) {
     	Map<String ,String> res = new HashMap<String, String>();
     	try {
-    		service.deleteProduct(id);
+    		auctionService.deleteProduct(id);
     		res.put("msg", "Deleted Auction with ID:"+id+" !");
     		return ResponseEntity.status(HttpStatus.OK).body(res);    		
     	}
@@ -127,7 +133,7 @@ public class ListingController {
     public ResponseEntity<?> createProduct(@RequestParam int id) {
     	Map<String ,String> res = new HashMap<String, String>();
     	try {
-    		service.deleteProduct(id);
+    		auctionService.deleteProduct(id);
     		res.put("msg", "Deleted Auction with ID:"+id+" !");
     		return ResponseEntity.status(HttpStatus.OK).body(res);    		
     	}

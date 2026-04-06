@@ -1,29 +1,28 @@
 package com.eAuction.e_backend.Controller;
 
+import java.security.Principal;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
-import com.eAuction.e_backend.DTO.BidData;
+import com.eAuction.e_backend.DTO.BidDTO;
 import com.eAuction.e_backend.service.impl.BidServiceImpl;
 
 @Controller
+@CrossOrigin(origins = {"http://localhost:4200","http://localhost:5173"})
 public class WebSocketController {
 
     @Autowired
     BidServiceImpl bidService;
 
-	@MessageMapping("/biding") // Clients will send messages to /main/biding
-    @SendTo("/main/bid/response") // Responses will be sent to subscribers of /auc/bid/response
-    public BidData processMessage(BidData message) {
-        try {
-            System.out.println("from WEBSOC"+ message);
-            bidService.placeBid(message.getUserId(),message.getAuctionItemId(),message.getBidAmount());
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } 
+    @MessageMapping("/biding")
+    @SendTo("/main/bid/response")
+    public BidDTO processMessage(BidDTO message, Principal principal) {
+        // principal.getName() is the username/email from the JWT
+        bidService.placeBidByUsername(principal.getName(), message.getAuctionItemId(), message.getBidAmount());
         return message;
     }
 }

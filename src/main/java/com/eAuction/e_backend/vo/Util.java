@@ -1,43 +1,42 @@
 package com.eAuction.e_backend.vo;
 
+import com.eAuction.e_backend.Entity.Users;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
-import io.jsonwebtoken.security.Keys;
-
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
-import com.eAuction.e_backend.Entity.Users;
-
-import java.security.Key;
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Component
 public class Util {
 
-    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    // Using the recommended SecretKey type for JJWT 0.12.x
+    private static final SecretKey SECRET_KEY = Jwts.SIG.HS256.key().build();
     private static final long EXPIRATION_TIME = 1800000; // 30 min
 
     public String generateToken(Users userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles", List.of(userDetails.getType().split(",")).stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList()));
+        
+        // Storing roles as plain strings is much cleaner for JWT payloads
+        List<String> roles = List.of(userDetails.getType().split(","));
+        claims.put("roles", roles);
+        
         return createToken(claims, userDetails.getUserName());
     }
 
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
-                .signWith(SECRET_KEY)
+                .claims(claims)
+                .subject(subject)
+                .issuedAt(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SECRET_KEY) // No need to specify algorithm, it infers from the key
                 .compact();
     }
 
@@ -47,7 +46,11 @@ public class Util {
     }
 
     public Boolean isTokenValid(String token) {
-        return !isTokenExpired(token);
+        try {
+            return !isTokenExpired(token);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     public String extractUsername(String token) {
@@ -64,11 +67,12 @@ public class Util {
     }
 
     private Claims extractAllClaims(String token) {
+        // Updated to the modern parserBuilder equivalent in JJWT 0.12.x
         return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
+                .verifyWith(SECRET_KEY)
                 .build()
-                .parseClaimsJws(token)
-                .getBody();
+                .parseSignedClaims(token)
+                .getPayload();
     }
 
     private Boolean isTokenExpired(String token) {

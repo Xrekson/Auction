@@ -1,5 +1,7 @@
 package com.eAuction.e_backend.Entity;
 
+import java.time.LocalDateTime;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -17,18 +19,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-@Table(name="Auction_Category")
+@Table(name = "Auction_Category")
 public class Category {
 
-	 @Id
-	 @Column
-	 @GeneratedValue(strategy = GenerationType.AUTO)
-	 private int category_id;
-	 @Column
-	 private String category_name;
-	 @Column
-	 private String category_details;
-	 @JoinColumn
-	 @OneToMany(cascade = CascadeType.ALL)
-	 private Listing[] products;
+	@Id
+	@Column
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private int category_id;
+	@Column
+	private String category_name;
+	@Column
+	private String category_details;
+	@JoinColumn
+	@OneToMany(cascade = CascadeType.ALL)
+	private Listing[] products;
+	LocalDateTime createdat;
+	LocalDateTime updatedat;
 }
