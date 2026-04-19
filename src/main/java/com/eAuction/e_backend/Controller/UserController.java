@@ -1,137 +1,77 @@
 package com.eAuction.e_backend.Controller;
 
-import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.eAuction.e_backend.DTO.UserDTO;
+import com.eAuction.e_backend.DTO.UserReq;
+import com.eAuction.e_backend.Entity.Users;
+import com.eAuction.e_backend.Service.UserService;
+import com.eAuction.e_backend.vo.Util;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.eAuction.e_backend.DTO.UserReq;
-import com.eAuction.e_backend.Entity.Users;
-import com.eAuction.e_backend.service.UserService;
-import com.eAuction.e_backend.vo.Util;
 @RestController
-@CrossOrigin(origins = {"http://localhost:4200","http://localhost:5173"},methods = {RequestMethod.GET,RequestMethod.POST,RequestMethod.PUT})
+@CrossOrigin(
+    origins = { "http://localhost:4200", "http://localhost:5173" },
+    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
+)
+@SecurityRequirement(name = "bearerAuth")
+@RequestMapping(path="/api/users")
 public class UserController {
-	@Autowired
-	UserService samp;
-	
-	@Autowired
-	Util jwtUtil;
-	
-	@Autowired
-    private PasswordEncoder encoder;
-	
-	@PostMapping(value = "/pre-auth/register")
-	public ResponseEntity<Map<String, Object>> save(@RequestBody(required = true) UserReq userData
-		// @RequestBody(required = true) String dob, @RequestBody(required = true) String email,
-		// 	@RequestBody(required = true) String mobileno, @RequestBody(required = true) String username,
-		// 	@RequestBody(required = true) String password, @RequestBody(required = true) String type,
-		// 	@RequestBody(required = true) String desx, @RequestBody(required = true) String about, @RequestBody(required = true) String name
-			) {
-		Users data = new Users();
-		Map<String, Object> response = new HashMap<String,Object>();
-		try {
-			System.out.print(userData.getDob()+userData.username+userData.password+userData.type+userData.desx+userData.about+userData.name);
-			data.setCreatedat(LocalDateTime.now());
-			data.setUpdatedat(LocalDateTime.now());
-			data.setDob(userData.getDob());
-			data.setEmail(userData.email);
-			data.setPhno(userData.mobileno);
-			data.setUserName(userData.username);
-			data.setPassword(encoder.encode(userData.password));
-			data.setType(userData.type);
-			data.setAbout(userData.about);
-			data.setDesx(userData.desx);
-			data.setName(userData.name);
-			samp.save(data);
-			response.put("msg","User Creation Success!");
-			return ResponseEntity.ok(response);
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.put("msg","User Creation Failed!");
-			response.put("err",e.getMessage());
-			return ResponseEntity.ok(response);
-		}
-	}
-	@GetMapping(value = "/user/getall")
-	public List<Users> name() {
-		return samp.getAll();
-	}
-	@GetMapping(value="/user/get/{username}")
-	public Users getuser(@PathVariable("username") String username) {
-		return samp.getusername(username);
-	}
-	@PostMapping(value="/pre-auth/login")
-	public ResponseEntity<?> login(@RequestBody UserReq userDTO) {
-		Users data = samp.getUsersingle(userDTO.getUsername(), userDTO.getPassword());
-		String password = encoder.encode(userDTO.getPassword());
-		if(data!=null) {
-			Map<String ,String> res = new HashMap<String, String>();
-			if(encoder.matches(data.getPassword(), password)) {
-				res.put("error", "Wrong password!");				
-			}else {
-				String jwToken = jwtUtil.generateToken(data);
-				res.put("token", jwToken);				
-				res.put("id", data.getId().toString());		
-				res.put("username", data.getUserName());
-				res.put("type", data.getType());
-				}
-//			claims.put("Position",data.getDesx());
-//			claims.put("Type",data.getType());			
-			return ResponseEntity.ok(res);
-		}else {
-			Map<String ,String> claims = new HashMap<String, String>();
-			claims.put("error", "Wrong username or password!");
-			return ResponseEntity.ok(claims);
-		}
-	}
-	@DeleteMapping(value = "/user/delete/{id}")
-	public void dell(@RequestParam("id") String id) {
-		samp.deleteUser(Integer.parseInt(id));
-	}
-	@PutMapping(value = "/user/update")
-	public void UpdateUser(@RequestBody(required = true) UserReq userData
-	//  @RequestBody(required = false) String email,
-	// 		@RequestBody(required = false) String phno, @RequestBody(required = true) String username,
-	// 		@RequestBody(required = false) String password,@RequestBody(required = false) Integer id,
-	// 		@RequestBody(required = false) String desx, @RequestBody(required = false) String about, @RequestBody(required = false) String name
-			) {
-		Users data = samp.getUsers(userData.username);
-		try {
-			data.setUpdatedat(LocalDateTime.now());
-			if(userData.dob!=null){
-				data.setDob(userData.getDob());
-			}
-			if(userData.email!=null)
-				data.setEmail(userData.email);
-			if(userData.mobileno!=null)
-				data.setPhno(userData.mobileno);
-			data.setUserName(userData.username);
-			if(userData.password!=null)
-				data.setPassword(userData.password);
-			if(userData.about!=null)
-				data.setAbout(userData.about);
-			if(userData.desx!=null)
-				data.setDesx(userData.desx);
-			if(userData.name!=null)
-				data.setName(userData.name);
-			samp.savex(data);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+
+    @Autowired
+    UserService samp;
+
+    @Autowired
+    Util jwtUtil;
+
+    @GetMapping(value = "/all")
+    public List<UserDTO> name() {
+        return samp.getAll();
+    }
+
+    @GetMapping(value = "/get/{username}")
+    public UserDTO getuser(@PathVariable("username") String username) {
+        return samp.getusername(username);
+    }
+
+    @DeleteMapping(value = "/delete/{id}")
+    public void dell(@RequestParam("id") String id) {
+        samp.deleteUser(Integer.parseInt(id));
+    }
+
+    @PutMapping(value = "/update")
+    public void UpdateUser(
+        @RequestBody(required = true) UserReq userData
+    ) {
+        Users data = samp.getUsers(userData.username);
+        try {
+            data.setUpdatedat(LocalDateTime.now());
+            if (userData.dob != null) {
+                data.setDob(userData.getDob());
+            }
+            if (userData.email != null) data.setEmail(userData.email);
+            if (userData.mobileno != null) data.setPhno(userData.mobileno);
+            data.setUserName(userData.username);
+            if (userData.password != null) data.setPassword(userData.password);
+            if (userData.about != null) data.setAbout(userData.about);
+            if (userData.desx != null) data.setDesx(userData.desx);
+            if (userData.name != null) data.setName(userData.name);
+            samp.savex(data);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -1,10 +1,7 @@
-package com.eAuction.e_backend.Controller;
+package com.eAuction.e_backend.Controller.pre_auth;
 
 import com.eAuction.e_backend.DTO.BidDTO;
 import com.eAuction.e_backend.Service.BidService;
-
-import io.swagger.v3.oas.annotations.security.SecurityRequirement;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +15,8 @@ import org.springframework.web.bind.annotation.*;
     methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
 )
 @RestController
-@SecurityRequirement(name = "bearerAuth")
-@RequestMapping(path = "/api/bid")
-public class BiddingController {
+@RequestMapping(path = "/api/pre-auth/bid")
+public class BiddingPreAuthController {
 
     @Autowired
     BidService bidService;
@@ -31,7 +27,7 @@ public class BiddingController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getBidById(@PathVariable int id) {
+    public ResponseEntity<?> getBidByIdPreAuth(@PathVariable int id) {
         Map<String, String> res = new HashMap<String, String>();
         BidDTO b = bidService.getBidbyID(id);
         if (b == null) {
@@ -43,15 +39,10 @@ public class BiddingController {
     }
 
     @GetMapping("/auction/{auctionItemId}")
-    public List<BidDTO> getBidsByAuctionItemId(
+    public List<BidDTO> getBidsByAuctionItemIdPreAuth(
         @PathVariable("auctionItemId") Integer auctionItemId
     ) {
         return bidService.getBidsByAuctionItemId(auctionItemId);
     }
 
-    @PostMapping("/place")
-    public ResponseEntity<String> placeBid(@RequestBody(required = true) BidDTO data
-    ) {
-        return bidService.placeBidByUsername(data.getUserName(),data.getAuctionItemId(),data.getBidAmount());
-    }
 }

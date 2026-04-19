@@ -15,6 +15,7 @@ public class AuctionData {
     private String name;
     private double price;
     private String detail;
+    private CategoryDTO category;
     private Double priceInterval;
     private LocalDateTime auction_start;
     private LocalDateTime auction_end;

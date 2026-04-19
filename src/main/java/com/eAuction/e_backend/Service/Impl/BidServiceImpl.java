@@ -1,22 +1,22 @@
-package com.eAuction.e_backend.service.impl;
+package com.eAuction.e_backend.Service.Impl;
 
+import com.eAuction.e_backend.DTO.AuctionData;
+import com.eAuction.e_backend.DTO.BidDTO;
+import com.eAuction.e_backend.Entity.Bid;
+import com.eAuction.e_backend.Entity.Listing;
+import com.eAuction.e_backend.Entity.Users;
+import com.eAuction.e_backend.Repository.BidRepo;
+import com.eAuction.e_backend.Service.AuctionProductService;
+import com.eAuction.e_backend.Service.BidService;
+import com.eAuction.e_backend.Service.UserService;
+import jakarta.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-
-import com.eAuction.e_backend.Entity.Bid;
-import com.eAuction.e_backend.Entity.Users;
-import com.eAuction.e_backend.Entity.Listing;
-import com.eAuction.e_backend.Repository.BidRepo;
-import com.eAuction.e_backend.service.BidService;
-import com.eAuction.e_backend.service.UserService;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class BidServiceImpl implements BidService {
@@ -25,20 +25,22 @@ public class BidServiceImpl implements BidService {
     BidRepo brepo;
 
     @Autowired
-    AuctionProductServiceImpl prodService;
+    AuctionProductService prodService;
 
     @Autowired
     UserService userService;
 
-    private static final Logger logger = LogManager.getLogger(BidServiceImpl.class);
+    private static final Logger logger = LogManager.getLogger(
+        BidServiceImpl.class
+    );
 
     /**
      * @return
      */
     @Override
     @Transactional
-    public List<Bid> getAllBids() {
-        return brepo.findAll();
+    public List<BidDTO> getAllBids() {
+        return brepo.findAll().stream().map(this::toDTO).toList();
     }
 
     /**
@@ -47,8 +49,8 @@ public class BidServiceImpl implements BidService {
      */
     @Override
     @Transactional
-    public Bid getBidbyID(int id) {
-        return brepo.findById(id).orElse(null);
+    public BidDTO getBidbyID(int id) {
+        return brepo.findById(id).map(this::toDTO).orElse(null);
     }
 
     /**
@@ -57,8 +59,8 @@ public class BidServiceImpl implements BidService {
      */
     @Override
     @Transactional
-    public List<Bid> getBidsByAuctionItemId(Integer auctionItemId) {
-        return brepo.findByAuctionItemId(auctionItemId);
+    public List<BidDTO> getBidsByAuctionItemId(Integer auctionItemId) {
+        return brepo.findByAuctionItemId(auctionItemId).stream().map(this::toDTO).toList();
     }
 
     /**
@@ -73,10 +75,14 @@ public class BidServiceImpl implements BidService {
      */
     @Override
     @Transactional
-    public ResponseEntity<String> placeBidByUsername(String username, int auctionItemId, double bidAmount) {
+    public ResponseEntity<String> placeBidByUsername(
+        String username,
+        int auctionItemId,
+        double bidAmount
+    ) {
         // 1. Find the user by username (email)
         // Assumption: Your userService has a method findByEmail or similar
-        Users user = userService.getusername(username);
+        Users user = userService.getUsers(username);
 
         if (user == null) {
             logger.error("Bid attempt by non-existent user: {}", username);
@@ -88,12 +94,18 @@ public class BidServiceImpl implements BidService {
     }
 
     @Transactional
-    public ResponseEntity<String> placeBid(int userId, int auctionItemId, double bidAmount) {
-        Listing auctionProduct;
+    public ResponseEntity<String> placeBid(
+        int userId,
+        int auctionItemId,
+        double bidAmount
+    ) {
+        AuctionData auctionProduct;
         try {
             auctionProduct = prodService.readProduct(auctionItemId);
             if (auctionProduct == null) {
-                return ResponseEntity.status(404).body("Auction item not found");
+                return ResponseEntity.status(404).body(
+                    "Auction item not found"
+                );
             }
         } catch (Exception e) {
             logger.error("Error fetching product: {}", e.getMessage());
@@ -101,10 +113,12 @@ public class BidServiceImpl implements BidService {
         }
 
         // Business Logic: Check if bid is high enough
-        double minimumRequired = auctionProduct.getHighestbid() + auctionProduct.getPriceInterval();
+        double minimumRequired =
+            auctionProduct.getHighestbid() + auctionProduct.getPriceInterval();
         if (bidAmount < minimumRequired) {
-            return ResponseEntity.badRequest()
-                    .body("Bid too low! Minimum required: " + minimumRequired);
+            return ResponseEntity.badRequest().body(
+                "Bid too low! Minimum required: " + minimumRequired
+            );
         }
 
         // Fetch user
@@ -116,7 +130,9 @@ public class BidServiceImpl implements BidService {
         // Create and save bid
         Bid bid = new Bid();
         bid.setUser(user);
-        bid.setAuctionItem(auctionProduct);
+        Listing listingEntity = new Listing();
+        listingEntity.setId(auctionProduct.getId()); // Minimal entity for relationship
+        bid.setAuctionItem(listingEntity);
         bid.setBidAmount(bidAmount);
         bid.setBidTimestamp(LocalDateTime.now());
 
@@ -127,5 +143,17 @@ public class BidServiceImpl implements BidService {
         String updateStatus = prodService.updateProduct(auctionProduct);
 
         return ResponseEntity.ok("Bid placed successfully. " + updateStatus);
+    }
+
+    private BidDTO toDTO(Bid bid) {
+        return new BidDTO(
+            bid.getBid_id(),
+            bid.getUser().getId(),
+            bid.getUser().getUserName(),
+            bid.getAuctionItem().getId(),
+            bid.getAuctionItem().getName(),
+            bid.getBidAmount(),
+            bid.getBidTimestamp()
+        );
     }
 }

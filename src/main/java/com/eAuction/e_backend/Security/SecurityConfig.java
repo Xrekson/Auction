@@ -29,7 +29,7 @@ public class SecurityConfig {
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
                 http.csrf((csf) -> csf.disable())
                                 .authorizeHttpRequests(auth -> auth
-                                                .requestMatchers("/pre-auth/**",
+                                                .requestMatchers("/api/pre-auth/**",
                                                                 "/swagger-ui/**",
                                                                 "/v3/api-docs/**",
                                                                 "/websoc/**" // Add this to allow the handshake
