@@ -8,13 +8,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Data
@@ -30,8 +29,8 @@ public class Category {
     private String name;
     private String details;
 
-    // 'mappedBy' tells JPA that the 'category' field in the Listing class owns the relationship
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @ToString.Exclude // Prevents Lombok StackOverflowError
     private List<Listing> products;
 
     private LocalDateTime createdAt;
