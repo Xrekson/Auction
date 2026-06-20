@@ -80,8 +80,27 @@ public class BidServiceImpl implements BidService {
         int auctionItemId,
         double bidAmount
     ) {
+        // Check if auction is active before continuing
+        AuctionData auctionProduct;
+        try {
+            auctionProduct = prodService.readProduct(auctionItemId);
+            if (auctionProduct == null) {
+                return ResponseEntity.status(404).body("Auction item not found");
+            }
+        } catch (Exception e) {
+            logger.error("Error fetching product: {}", e.getMessage());
+            return ResponseEntity.internalServerError().build();
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        if (auctionProduct.getAuction_start() != null && now.isBefore(auctionProduct.getAuction_start())) {
+            return ResponseEntity.badRequest().body("Auction has not started yet.");
+        }
+        if (auctionProduct.getAuction_end() != null && now.isAfter(auctionProduct.getAuction_end())) {
+            return ResponseEntity.badRequest().body("Auction has already ended.");
+        }
+
         // 1. Find the user by username (email)
-        // Assumption: Your userService has a method findByEmail or similar
         Users user = userService.getUsers(username);
 
         if (user == null) {
@@ -112,9 +131,27 @@ public class BidServiceImpl implements BidService {
             return ResponseEntity.internalServerError().build();
         }
 
+        // Check if auction is currently active
+        LocalDateTime now = LocalDateTime.now();
+        if (auctionProduct.getAuction_start() != null && now.isBefore(auctionProduct.getAuction_start())) {
+            return ResponseEntity.badRequest().body("Auction has not started yet.");
+        }
+        if (auctionProduct.getAuction_end() != null && now.isAfter(auctionProduct.getAuction_end())) {
+            return ResponseEntity.badRequest().body("Auction has already ended.");
+        }
+
         // Business Logic: Check if bid is high enough
-        double minimumRequired =
-            auctionProduct.getHighestbid() + auctionProduct.getPriceInterval();
+        double minIncrement = auctionProduct.getPriceInterval() != null ? auctionProduct.getPriceInterval() : 0.0;
+        double currentHighest = auctionProduct.getHighestbid() != null ? auctionProduct.getHighestbid() : 0.0;
+        double basePrice = auctionProduct.getPrice();
+
+        double minimumRequired;
+        if (currentHighest <= 0.0) {
+            minimumRequired = basePrice;
+        } else {
+            minimumRequired = currentHighest + minIncrement;
+        }
+
         if (bidAmount < minimumRequired) {
             return ResponseEntity.badRequest().body(
                 "Bid too low! Minimum required: " + minimumRequired

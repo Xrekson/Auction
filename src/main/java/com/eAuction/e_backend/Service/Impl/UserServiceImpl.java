@@ -40,13 +40,14 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public Users getUsers(String uname) {
-        return userRepo.findByUserName(uname).get(0);
+        var data = userRepo.findByUserName(uname);
+        return data.size() > 0 ? data.get(0) : null;
     }
 
     @Override
     @Transactional
     public Users getUsers(Integer id) {
-        return userRepo.findById(id).get();
+        return userRepo.findById(id).orElse(null);
     }
 
     @Override
@@ -117,6 +118,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Users getfromusername(String username) {
-        return userRepo.findByUserName(username).get(0);
+        var data = userRepo.findByUserName(username);
+        return data.size() > 0 ? data.get(0) : null;
     }
 }

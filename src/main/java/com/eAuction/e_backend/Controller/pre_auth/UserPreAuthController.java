@@ -87,10 +87,9 @@ public class UserPreAuthController {
             userDTO.getUsername(),
             userDTO.getPassword()
         );
-        String password = encoder.encode(userDTO.getPassword());
         if (data != null) {
             Map<String, String> res = new HashMap<String, String>();
-            if (encoder.matches(data.getPassword(), password)) {
+            if (!encoder.matches(userDTO.getPassword(), data.getPassword())) {
                 res.put("error", "Wrong password!");
             } else {
                 String jwToken = jwtUtil.generateToken(data);
