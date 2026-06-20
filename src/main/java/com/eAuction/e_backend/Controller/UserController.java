@@ -23,12 +23,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(
-    origins = { "http://localhost:4200", "http://localhost:5173" },
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
-)
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = { RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.PUT })
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping(path="/api/users")
+@RequestMapping(path = "/api/users")
 public class UserController {
 
     @Autowired
@@ -54,21 +52,26 @@ public class UserController {
 
     @PutMapping(value = "/update")
     public void UpdateUser(
-        @RequestBody(required = true) UserReq userData
-    ) {
+            @RequestBody(required = true) UserReq userData) {
         Users data = samp.getUsers(userData.username);
         try {
             data.setUpdatedat(LocalDateTime.now());
             if (userData.dob != null) {
                 data.setDob(userData.getDob());
             }
-            if (userData.email != null) data.setEmail(userData.email);
-            if (userData.mobileno != null) data.setPhno(userData.mobileno);
+            if (userData.email != null)
+                data.setEmail(userData.email);
+            if (userData.mobileno != null)
+                data.setPhno(userData.mobileno);
             data.setUserName(userData.username);
-            if (userData.password != null) data.setPassword(userData.password);
-            if (userData.about != null) data.setAbout(userData.about);
-            if (userData.desx != null) data.setDesx(userData.desx);
-            if (userData.name != null) data.setName(userData.name);
+            if (userData.password != null)
+                data.setPassword(userData.password);
+            if (userData.about != null)
+                data.setAbout(userData.about);
+            if (userData.desx != null)
+                data.setDesx(userData.desx);
+            if (userData.name != null)
+                data.setName(userData.name);
             samp.savex(data);
         } catch (Exception e) {
             e.printStackTrace();

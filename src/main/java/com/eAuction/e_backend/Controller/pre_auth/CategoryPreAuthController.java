@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/pre-auth/categories")
-@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:5173" }) // Adjust this for your frontend URL in production
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class CategoryPreAuthController {
 
     @Autowired

@@ -12,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(
-    origins = { "http://localhost:4200", "http://localhost:5173" },
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
-)
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = { RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.PUT })
 @RestController
 @RequestMapping("/api/pre-auth/listing")
 public class ListingPreAuthController {
@@ -27,7 +25,7 @@ public class ListingPreAuthController {
     public List<AuctionData> readProductPreAuth() {
         return auctionService.readAllProduct();
     }
-    
+
     @GetMapping(path = "{id}")
     public AuctionData readProductByIDPreAuth(@PathVariable(name = "id") Integer id) {
         AuctionData prod = auctionService.readProduct(id);

@@ -15,8 +15,8 @@ import java.util.Map;
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping(path="/api/categories")
-@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:5173" }) // Adjust this for your frontend URL in production
+@RequestMapping(path = "/api/categories")
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class CategoryController {
 
     @Autowired

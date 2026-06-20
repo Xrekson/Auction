@@ -22,10 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@CrossOrigin(
-    origins = { "http://localhost:4200", "http://localhost:5173" },
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
-)
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = { RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.PUT })
 @RequestMapping("/api/pre-auth/user")
 public class UserPreAuthController {
 
@@ -40,20 +38,18 @@ public class UserPreAuthController {
 
     @PostMapping(value = "/register")
     public ResponseEntity<Map<String, Object>> savePreAuth(
-        @RequestBody(required = true) UserReq userData
-    ) {
+            @RequestBody(required = true) UserReq userData) {
         Users data = new Users();
         Map<String, Object> response = new HashMap<String, Object>();
         try {
             System.out.print(
-                userData.getDob() +
-                    userData.username +
-                    userData.password +
-                    userData.type +
-                    userData.desx +
-                    userData.about +
-                    userData.name
-            );
+                    userData.getDob() +
+                            userData.username +
+                            userData.password +
+                            userData.type +
+                            userData.desx +
+                            userData.about +
+                            userData.name);
             data.setCreatedat(LocalDateTime.now());
             data.setUpdatedat(LocalDateTime.now());
             data.setDob(userData.getDob());
@@ -84,9 +80,8 @@ public class UserPreAuthController {
     @PostMapping(value = "/login")
     public ResponseEntity<?> loginPreAuth(@RequestBody LoginReq userDTO) {
         Users data = samp.getUsersingle(
-            userDTO.getUsername(),
-            userDTO.getPassword()
-        );
+                userDTO.getUsername(),
+                userDTO.getPassword());
         if (data != null) {
             Map<String, String> res = new HashMap<String, String>();
             if (!encoder.matches(userDTO.getPassword(), data.getPassword())) {

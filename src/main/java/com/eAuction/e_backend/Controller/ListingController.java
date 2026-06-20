@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@CrossOrigin(
-    origins = { "http://localhost:4200", "http://localhost:5173" },
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
-)
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = { RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.PUT })
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping(path="/api/listing")
+@RequestMapping(path = "/api/listing")
 public class ListingController {
     @Autowired
     private AuctionProductService auctionService;
@@ -40,13 +38,12 @@ public class ListingController {
     public List<AuctionData> readProduct() {
         return auctionService.readAllProduct();
     }
-    
+
     @GetMapping(path = "{id}")
     public AuctionData readProductByID(@PathVariable(name = "id") Integer id) {
         AuctionData prod = auctionService.readProduct(id);
         return prod;
     }
-
 
     @PostMapping(path = "/save")
     public ResponseEntity<?> createProduct(@RequestBody AuctionData data) {
@@ -63,39 +60,40 @@ public class ListingController {
             res.put("error", "Failed to create new auction Listing!");
             res.put("path", e.getMessage());
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(
-                res
-            );
+                    res);
         }
     }
 
     @PutMapping(path = "/update")
     public ResponseEntity<?> updateProduct(
-        @RequestParam(name = "name", required = false) String productName,
-        @RequestParam(name = "price", required = false) Double productPrice,
-        @RequestParam(required = false) String[] image,
-        @RequestParam(name = "detail", required = false) String productDetail,
-        @RequestParam(name = "highest_bid", required = false) Double hbid,
-        @RequestParam(required = false) String updatedby,
-        @RequestParam(required = false) @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE_TIME
-        ) LocalDateTime starttime,
-        @RequestParam(required = false) @DateTimeFormat(
-            iso = DateTimeFormat.ISO.DATE_TIME
-        ) LocalDateTime endtime,
-        @RequestParam Integer id
-    ) {
+            @RequestParam(name = "name", required = false) String productName,
+            @RequestParam(name = "price", required = false) Double productPrice,
+            @RequestParam(required = false) String[] image,
+            @RequestParam(name = "detail", required = false) String productDetail,
+            @RequestParam(name = "highest_bid", required = false) Double hbid,
+            @RequestParam(required = false) String updatedby,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime starttime,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endtime,
+            @RequestParam Integer id) {
         Map<String, String> res = new HashMap<String, String>();
         AuctionData prodop = auctionService.readProduct(id);
         if (prodop != null) {
             try {
                 AuctionData prod = prodop;
-                if (productName != null) prod.setName(productName);
-                if (productDetail != null) prod.setDetail(productDetail);
-                if (hbid != null) prod.setHighestbid(hbid);
-                if (productPrice != null) prod.setPrice(productPrice);
-                if (updatedby != null) prod.setUpdatedby(updatedby);
-                if (starttime != null) prod.setAuction_start(starttime);
-                if (endtime != null) prod.setAuction_end(endtime);
+                if (productName != null)
+                    prod.setName(productName);
+                if (productDetail != null)
+                    prod.setDetail(productDetail);
+                if (hbid != null)
+                    prod.setHighestbid(hbid);
+                if (productPrice != null)
+                    prod.setPrice(productPrice);
+                if (updatedby != null)
+                    prod.setUpdatedby(updatedby);
+                if (starttime != null)
+                    prod.setAuction_start(starttime);
+                if (endtime != null)
+                    prod.setAuction_end(endtime);
                 String msg;
                 msg = auctionService.updateProduct(prod);
                 res.put("msg", msg);
@@ -103,8 +101,7 @@ public class ListingController {
             } catch (Exception e) {
                 res.put("msg", e.getMessage());
                 return ResponseEntity.status(
-                    HttpStatus.INTERNAL_SERVER_ERROR
-                ).body(res);
+                        HttpStatus.INTERNAL_SERVER_ERROR).body(res);
             }
         } else {
             return ResponseEntity.notFound().build();

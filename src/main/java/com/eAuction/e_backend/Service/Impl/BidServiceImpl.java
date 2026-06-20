@@ -164,6 +164,10 @@ public class BidServiceImpl implements BidService {
             return ResponseEntity.status(404).body("User not found");
         }
 
+        if ("ADMIN".equalsIgnoreCase(user.getType())) {
+            return ResponseEntity.status(403).body("Administrators are not allowed to place bids.");
+        }
+
         // Create and save bid
         Bid bid = new Bid();
         bid.setUser(user);

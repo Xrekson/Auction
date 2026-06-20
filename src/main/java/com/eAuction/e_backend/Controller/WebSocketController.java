@@ -14,7 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Controller
-@CrossOrigin(origins = { "http://localhost:4200", "http://localhost:5173" })
+@CrossOrigin(origins = "${app.cors.allowed-origins}")
 public class WebSocketController {
 
     @Autowired
@@ -29,21 +29,24 @@ public class WebSocketController {
         CompletableFuture.runAsync(() -> {
             try {
                 ResponseEntity<String> response = bidService.placeBidByUsername(
-                    principal.getName(),
-                    message.getAuctionItemId(),
-                    message.getBidAmount()
-                );
+                        principal.getName(),
+                        message.getAuctionItemId(),
+                        message.getBidAmount());
 
                 if (response.getStatusCode().is2xxSuccessful()) {
                     // Broadcast successful bid to all subscribers
+                    message.setUserName(principal.getName());
+
                     messagingTemplate.convertAndSend("/main/bid/response", message);
+                    // Also broadcast to the admin dashboard global topic
+                    messagingTemplate.convertAndSend("/main/admin/bids", message);
                 } else {
                     // Notify only the user who made the invalid bid
                     Map<String, Object> error = new HashMap<>();
                     error.put("error", "Bid Rejected");
                     error.put("message", response.getBody());
                     error.put("auctionItemId", message.getAuctionItemId());
-                    
+
                     messagingTemplate.convertAndSendToUser(principal.getName(), "/queue/errors", error);
                 }
             } catch (Exception e) {

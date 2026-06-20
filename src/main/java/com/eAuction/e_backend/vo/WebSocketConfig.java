@@ -20,19 +20,19 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     @Override
     public void configureClientInboundChannel(ChannelRegistration registration) {
         // MUST uncomment this to enable the security check you wrote!
-        registration.interceptors(jwtInterceptor); 
+        registration.interceptors(jwtInterceptor);
     }
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/main"); 
-        config.setApplicationDestinationPrefixes("/auc"); 
+        config.enableSimpleBroker("/main");
+        config.setApplicationDestinationPrefixes("/auc");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
-        registry.addEndpoint("/websoc") 
-                .setAllowedOriginPatterns("*") 
-                .withSockJS(); 
+        registry.addEndpoint("/websoc")
+                .setAllowedOriginPatterns("*");
+        // .withSockJS();
     }
 }

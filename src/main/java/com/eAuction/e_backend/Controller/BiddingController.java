@@ -13,10 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(
-    origins = { "http://localhost:4200", "http://localhost:5173" },
-    methods = { RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT }
-)
+@CrossOrigin(origins = "${app.cors.allowed-origins}", methods = { RequestMethod.GET,
+        RequestMethod.POST, RequestMethod.PUT })
 @RestController
 @SecurityRequirement(name = "bearerAuth")
 @RequestMapping(path = "/api/bid")
@@ -44,14 +42,12 @@ public class BiddingController {
 
     @GetMapping("/auction/{auctionItemId}")
     public List<BidDTO> getBidsByAuctionItemId(
-        @PathVariable("auctionItemId") Integer auctionItemId
-    ) {
+            @PathVariable("auctionItemId") Integer auctionItemId) {
         return bidService.getBidsByAuctionItemId(auctionItemId);
     }
 
     @PostMapping("/place")
-    public ResponseEntity<String> placeBid(@RequestBody(required = true) BidDTO data
-    ) {
-        return bidService.placeBidByUsername(data.getUserName(),data.getAuctionItemId(),data.getBidAmount());
+    public ResponseEntity<String> placeBid(@RequestBody(required = true) BidDTO data) {
+        return bidService.placeBidByUsername(data.getUserName(), data.getAuctionItemId(), data.getBidAmount());
     }
 }
