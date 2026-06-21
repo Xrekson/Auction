@@ -121,4 +121,10 @@ public class UserServiceImpl implements UserService {
         var data = userRepo.findByUserName(username);
         return data.size() > 0 ? data.get(0) : null;
     }
+
+    @Override
+    public Users getfromemail(String email) {
+        var data = userRepo.findByEmail(email);
+        return data.size() > 0 ? data.get(0) : null;
+    }
 }

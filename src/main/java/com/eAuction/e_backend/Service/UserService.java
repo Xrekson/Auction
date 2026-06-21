@@ -17,4 +17,5 @@ public interface UserService {
     public List<UserDTO> getAll();
     public void updateUser(Users input) throws Exception;
     public void deleteUser(Integer id);
+    public Users getfromemail(String email);
 }

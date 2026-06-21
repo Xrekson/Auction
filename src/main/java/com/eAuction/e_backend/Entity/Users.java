@@ -39,4 +39,16 @@ public class Users {
 	String type;
 	LocalDateTime createdat;
 	LocalDateTime updatedat;
+
+	@Column(nullable = false, columnDefinition = "boolean default false")
+	private Boolean verified = false;
+
+	@Column(length = 6)
+	private String otpCode;
+
+	private LocalDateTime otpExpiry;
+
+	public Boolean getVerified() {
+		return verified == null ? Boolean.TRUE : verified;
+	}
 }

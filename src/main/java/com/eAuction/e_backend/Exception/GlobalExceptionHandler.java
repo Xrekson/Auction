@@ -50,6 +50,11 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.UNAUTHORIZED, "Unauthorized", ex.getMessage());
     }
 
+    @ExceptionHandler(SessionExpiredException.class)
+    public ResponseEntity<Map<String, Object>> handleSessionExpiredException(SessionExpiredException ex) {
+        return buildResponse(HttpStatus.UNAUTHORIZED, "SESSION_EXPIRED", ex.getMessage());
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleFallbackException(Exception ex) {
         return buildResponse(HttpStatus.INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage());

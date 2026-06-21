@@ -49,10 +49,10 @@ public class AuctionProductServiceImpl implements AuctionProductService {
     @Override
     public List<AuctionData> readAllProduct() {
         return prepo
-            .findAll()
-            .stream()
-            .map(autionMapper::toDto)
-            .toList();
+                .findAll()
+                .stream()
+                .map(autionMapper::toDto)
+                .toList();
     }
 
 }

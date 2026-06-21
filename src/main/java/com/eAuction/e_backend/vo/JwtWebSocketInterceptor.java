@@ -13,6 +13,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import com.eAuction.e_backend.Exception.SessionExpiredException;
+import io.jsonwebtoken.ExpiredJwtException;
+
 @Component
 public class JwtWebSocketInterceptor implements ChannelInterceptor {
 
@@ -32,20 +35,24 @@ public class JwtWebSocketInterceptor implements ChannelInterceptor {
             String token = extractToken(accessor);
             
             if (token != null) {
-                String username = jwtUtil.extractUsername(token);
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
-                
-                // Combined the checks to avoid redundant parsing
-                if (jwtUtil.validateToken(token, userDetails)) {
-                    UsernamePasswordAuthenticationToken authentication = 
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                try {
+                    String username = jwtUtil.extractUsername(token);
+                    UserDetails userDetails = this.userDetailsService.loadUserByUsername(username);
                     
-                    // Set authentication for Spring Security & the WebSocket session
-                    SecurityContextHolder.getContext().setAuthentication(authentication);
-                    accessor.setUser(authentication);
-                } else {
-                    // Clear context if token validation fails
-                    SecurityContextHolder.clearContext();
+                    // Combined the checks to avoid redundant parsing
+                    if (jwtUtil.validateToken(token, userDetails)) {
+                        UsernamePasswordAuthenticationToken authentication = 
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                        
+                        // Set authentication for Spring Security & the WebSocket session
+                        SecurityContextHolder.getContext().setAuthentication(authentication);
+                        accessor.setUser(authentication);
+                    } else {
+                        // Clear context if token validation fails
+                        SecurityContextHolder.clearContext();
+                    }
+                } catch (ExpiredJwtException e) {
+                    throw new SessionExpiredException("WebSocket session expired due to invalid token.");
                 }
             }
         }
